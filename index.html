@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>국내주식 코칭 대시보드</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">MTS 이미지 기반</p>
+          <h1>국내주식 코칭 대시보드</h1>
+        </div>
+        <div class="status-pill" id="ocrStatus">대기</div>
+      </header>
+
+      <section class="workspace" aria-label="국내주식 보유종목 코칭">
+        <aside class="ingest-panel" aria-labelledby="uploadTitle">
+          <div class="section-title">
+            <h2 id="uploadTitle">보유종목 가져오기</h2>
+            <span>PNG/JPG/WEBP, 8MB 이하</span>
+          </div>
+
+          <div class="drop-zone" id="dropZone">
+            <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
+            <button class="primary-button" id="pickImageButton" type="button">이미지 선택</button>
+            <button class="secondary-button" id="runOcrButton" type="button" disabled>OCR 실행</button>
+            <button class="ghost-button" id="sampleButton" type="button">샘플 입력</button>
+          </div>
+
+          <div class="preview-shell" id="previewShell">
+            <div class="preview-grid" id="previewGrid"></div>
+            <span id="previewEmpty">이미지 미리보기</span>
+          </div>
+
+          <label class="field-block" for="ocrText">
+            <span>OCR/보정 텍스트</span>
+            <textarea id="ocrText" rows="9" spellcheck="false"></textarea>
+          </label>
+
+          <div class="button-row">
+            <button class="primary-button" id="parseTextButton" type="button">표로 변환</button>
+            <button class="secondary-button" id="addRowButton" type="button">행 추가</button>
+            <button class="ghost-button" id="resetButton" type="button">초기화</button>
+          </div>
+
+          <p class="message" id="uploadMessage" role="status"></p>
+
+          <section class="share-workflow" aria-labelledby="shareTitle">
+            <div class="section-title">
+              <h2 id="shareTitle">카톡방 공유</h2>
+              <span>오픈채팅용</span>
+            </div>
+            <div class="share-preview" id="sharePreview">종목 변환 후 결과 요약이 표시됩니다.</div>
+            <div class="button-row">
+              <button class="secondary-button" id="copyEntryLinkButton" type="button">방 공지 링크 복사</button>
+              <button class="primary-button" id="shareResultButton" type="button" disabled>결과 요약 공유</button>
+            </div>
+            <p class="message" id="shareMessage" role="status"></p>
+          </section>
+        </aside>
+
+        <section class="dashboard-panel" aria-label="포트폴리오 대시보드">
+          <section class="summary-grid" aria-label="포트폴리오 요약">
+            <article class="metric-card">
+              <span>총 평가금액</span>
+              <strong id="totalValue">0원</strong>
+            </article>
+            <article class="metric-card">
+              <span>가중 수익률</span>
+              <strong id="weightedProfit">0.00%</strong>
+            </article>
+            <article class="metric-card">
+              <span>평균 액션</span>
+              <strong id="averageAction">보유</strong>
+            </article>
+            <article class="metric-card">
+              <span>최대 비중</span>
+              <strong id="topWeight">0.00%</strong>
+            </article>
+          </section>
+
+          <section class="action-board" aria-labelledby="actionBoardTitle">
+            <div class="section-title">
+              <h2 id="actionBoardTitle">액션 분포</h2>
+              <span id="holdingCount">0종목</span>
+            </div>
+            <div class="action-bars" id="actionBars"></div>
+          </section>
+
+          <section class="holdings-section" aria-labelledby="holdingsTitle">
+            <div class="section-title">
+              <h2 id="holdingsTitle">종목별 코칭</h2>
+              <span>점수는 보유정보와 뉴스 점수를 반영</span>
+            </div>
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>종목</th>
+                    <th>점수</th>
+                    <th>액션</th>
+                    <th>내용</th>
+                    <th>코드</th>
+                    <th>수량</th>
+                    <th>평단가</th>
+                    <th>현재가</th>
+                    <th>수익률</th>
+                    <th>비중</th>
+                    <th>평가금액</th>
+                    <th>뉴스</th>
+                    <th>성장성</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="holdingsTable"></tbody>
+              </table>
+              <div class="empty-state" id="emptyState">이미지 또는 텍스트를 입력하면 종목별 점수가 표시됩니다.</div>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="src/portfolio.js"></script>
+    <script src="src/app.js"></script>
+  </body>
+</html>
