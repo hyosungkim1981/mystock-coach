@@ -1,0 +1,6 @@
+interface:
+  display_name: "에이전트 테스트 시나리오"
+  short_description: "회귀 안전성 테스트케이스 설계"
+  default_prompt: "Use $agent-test-scenario-design to create smoke, boundary, safety, adversarial, and dashboard-field test scenarios for these agents."
+policy:
+  allow_implicit_invocation: true

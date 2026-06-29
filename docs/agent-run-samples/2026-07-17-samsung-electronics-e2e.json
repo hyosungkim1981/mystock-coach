@@ -1,0 +1,165 @@
+{
+  "schemaVersion": "agent-analysis-result.v1",
+  "runId": "agent-run-20260717-samsung-005930",
+  "runDate": "2026-07-17",
+  "purpose": "삼성전자 1개 종목 end-to-end 에이전트 실행 샘플",
+  "holding": {
+    "name": "삼성전자",
+    "ticker": "005930",
+    "market": "KOSPI",
+    "currentPrice": 255000,
+    "marketValue": 52622500,
+    "profitLoss": 38656500,
+    "profitRate": 276.79,
+    "portfolioWeight": 40.53,
+    "source": "사용자 MTS 샘플 이미지의 평가금액/평가손익/수익률과 2026-07-17 확인 현재가를 조합한 검증용 샘플"
+  },
+  "appScore": {
+    "score": 57,
+    "action": "보유",
+    "signals": {
+      "profit": 48,
+      "weight": 22,
+      "risk": 28,
+      "momentum": 100,
+      "news": 62.5,
+      "growth": 72.5
+    },
+    "memo": "기존 앱 계산식은 강한 수익 모멘텀과 성장성은 긍정으로 보지만, 40% 이상 비중과 큰 평가이익 때문에 리스크 점수와 비중 점수가 낮아져 보유로 계산된다."
+  },
+  "agentAnalysis": {
+    "researchResult": {
+      "researchDate": "2026-07-17",
+      "companySummary": "삼성전자는 DX, DS, SDC, Harman을 중심으로 완제품과 부품 사업을 모두 영위하는 글로벌 전자/반도체 기업이다.",
+      "businessSegments": [
+        "DX: TV, 모니터, 생활가전, 스마트폰, 네트워크, PC",
+        "DS: DRAM, NAND, 모바일 AP 등 반도체",
+        "SDC: 모바일 OLED 등 디스플레이 패널",
+        "Harman: 디지털 콕핏, 카오디오, 소비자 오디오"
+      ],
+      "growthDrivers": [
+        "AI 인프라 확대에 따른 고부가 메모리 수요",
+        "HBM, DDR5, eSSD 등 AI 중심 제품 믹스 개선",
+        "선단 공정과 파운드리 고객 다변화 시도",
+        "프리미엄 스마트폰, 폴더블, AI 기능 강화"
+      ],
+      "newsMomentum": "공식 IR 기준 2026년 2분기 실적 발표 콜은 2026-07-30 예정이며, 2026-07-07에는 2분기 잠정 실적 가이던스가 공지됐다. 단기 주가는 반도체 변동성 확대와 높은 기대치 때문에 흔들릴 수 있다.",
+      "riskFactors": [
+        "메모리 업황 사이클과 가격 변동성",
+        "HBM/AI 메모리 경쟁 심화",
+        "파운드리 수익성 및 선단 공정 실행 리스크",
+        "단기 급등 후 차익실현과 레버리지 거래 변동성",
+        "환율, 금리, 글로벌 IT 수요 둔화"
+      ],
+      "growthScore": 45,
+      "newsScore": 25,
+      "riskLevel": "보통~높음",
+      "dashboardMemo": "AI 메모리와 반도체 실적 모멘텀은 긍정적이나, 이미 큰 수익과 높은 비중 상태라 신규 매수보다 비중 관리가 우선이다."
+    },
+    "analystResult": {
+      "analystDate": "2026-07-17",
+      "analystOpinion": "보유",
+      "targetPrice": 290000,
+      "targetPriceRange": {
+        "low": 260000,
+        "high": 320000
+      },
+      "buyReferenceRange": {
+        "low": 225000,
+        "high": 245000
+      },
+      "sellReferenceRange": {
+        "low": 280000,
+        "high": 320000
+      },
+      "valuationMethod": "간이 시나리오 방식. 2026년 2분기 확정 실적 전이므로 정밀 DCF나 확정 목표주가가 아니라 현재가, 잠정 실적 모멘텀, 변동성, 포트폴리오 비중을 반영한 대시보드용 참고 구간이다.",
+      "upsideFromCurrent": 13.73,
+      "valuationScore": 10,
+      "riskScore": -35,
+      "analystSummary": "실적 모멘텀은 긍정적이지만 현재가는 이미 높은 기대를 반영한 구간으로 본다. 2분기 확정 실적 전까지는 신규 적극매수보다 보유와 분할 차익 관리가 더 적절하다.",
+      "confidenceLevel": "보통",
+      "limitations": [
+        "2026년 2분기 확정 실적 발표 전이라 잠정 가이던스 기반이다.",
+        "정식 컨센서스 EPS, 피어 멀티플, DCF 가정은 아직 반영하지 않았다.",
+        "가격 구간은 투자 권유가 아니라 대시보드 검증용 참고값이다."
+      ]
+    },
+    "portfolioOperationResult": {
+      "currentWeight": 40.53,
+      "targetWeight": 24,
+      "rebalanceAction": "일부축소",
+      "rebalancePriority": 1,
+      "rebalanceDelta": -16.53,
+      "cashPlan": "목표 비중 24%까지 한 번에 줄이지 말고, 280,000원 이상 또는 변동성 재확대 시 3회 분할로 현금 비중을 회복한다.",
+      "concentrationRisk": "삼성전자 단일 종목 비중이 40%를 넘어 포트폴리오 전체가 반도체 대형주 변동성에 크게 노출되어 있다.",
+      "operatorSummary": "기업 퀄리티와 성장성은 인정하되 포트폴리오 관점에서는 비중 과다다. 추가 매수보다 일부 차익 실현과 목표 비중 회복이 우선이다."
+    },
+    "validationResult": {
+      "validationStatus": "WARN",
+      "validationScore": 82,
+      "missingFields": [
+        "정식 애널리스트 컨센서스 EPS",
+        "피어 멀티플",
+        "2Q26 확정 실적 세부 수치"
+      ],
+      "safetyWarnings": [
+        "참고 목표가와 매수/매도 구간은 정밀 밸류에이션이 아니라 샘플 산출값이다.",
+        "포트폴리오 비중이 높아 매수 판단보다 리스크 관리가 우선이다.",
+        "실제 주문 실행으로 연결하면 안 된다."
+      ],
+      "sourceCheck": "삼성전자 공식 IR, 공식 뉴스룸, 2026년 1분기 사업보고서, 2026-07-17 주가 확인 출처를 포함했다.",
+      "numericEvidenceCheck": "현재가, 보유 수익률, 비중, 앱 점수는 근거가 있으나 목표가와 구간은 간이 시나리오라 WARN이다.",
+      "usableForDashboard": true,
+      "revisionPrompt": "2Q26 확정 실적 발표 후 EPS, 피어 PER, 컨센서스 목표가를 추가해 목표가 범위를 재산정하고 validationStatus를 재검토하세요."
+    }
+  },
+  "dashboardResult": {
+    "displayScore": 44,
+    "displayAction": "분할매도 1단계",
+    "actionReason": "기존 앱 점수는 보유지만, 단일 종목 비중 40.53%와 +276.79% 수익 상태를 반영하면 포트폴리오 리스크 관점에서 일부축소가 우선이다.",
+    "primaryBadges": [
+      "AI 메모리 성장",
+      "2Q 실적 확인 필요",
+      "비중 과다",
+      "분할 차익 관리"
+    ],
+    "detailText": "삼성전자는 AI 메모리와 반도체 업황 개선 기대가 크지만, 샘플 포트폴리오에서는 이미 비중이 40%를 넘고 수익률도 매우 높다. 신규 매수보다 280,000원 이상 강세 구간에서 일부 차익 실현을 검토하고, 2Q26 확정 실적 후 목표 비중을 다시 조정하는 흐름이 적절하다.",
+    "buyReferenceText": "신규 매수는 225,000~245,000원 조정 구간에서만 분할 검토한다. 현재 보유 비중이 높으므로 추가 매수 우선순위는 낮다.",
+    "sellReferenceText": "280,000~320,000원 구간에서는 1차 분할매도 또는 비중 축소를 검토한다. 목표는 단일 종목 비중을 24% 안팎으로 낮추는 것이다.",
+    "riskText": "반도체 변동성, 단기 급등 후 차익실현, 2Q26 확정 실적 전 불확실성, 단일 종목 집중 리스크를 함께 관리해야 한다.",
+    "validationBadge": "WARN"
+  },
+  "sources": [
+    {
+      "title": "Samsung Investor Relations",
+      "url": "https://www.samsung.com/global/ir/",
+      "checkedDate": "2026-07-17",
+      "usage": "2Q26 실적 발표 일정, 1Q26 최신 분기자료 확인"
+    },
+    {
+      "title": "Samsung Electronics Announces Earnings Guidance for Second Quarter 2026",
+      "url": "https://news.samsung.com/global/samsung-electronics-announces-earnings-guidance-for-second-quarter-2026",
+      "checkedDate": "2026-07-17",
+      "usage": "2Q26 잠정 매출과 영업이익 가이던스 확인"
+    },
+    {
+      "title": "Samsung Electronics Announces First Quarter 2026 Results",
+      "url": "https://news.samsung.com/global/samsung-electronics-announces-first-quarter-2026-results",
+      "checkedDate": "2026-07-17",
+      "usage": "메모리, 파운드리, DX, SDC 사업 전망 확인"
+    },
+    {
+      "title": "Samsung Electronics 2026 1Q Interim Business Report",
+      "url": "https://images.samsung.com/is/content/samsung/assets/global/ir/docs/2026_1Q_Interim_Report.pdf",
+      "checkedDate": "2026-07-17",
+      "usage": "사업부 구성과 1Q26 매출 구조 확인"
+    },
+    {
+      "title": "TradingView KRX:005930",
+      "url": "https://www.tradingview.com/symbols/KRX-005930/",
+      "checkedDate": "2026-07-17",
+      "usage": "2026-07-17 기준 주가 255,000원 확인"
+    }
+  ],
+  "safetyNotice": "이 결과는 주식매매 코칭 봇의 대시보드/에이전트 체인 검증용 샘플이며, 금융투자업자의 투자자문이나 실제 매수·매도 지시가 아니다."
+}

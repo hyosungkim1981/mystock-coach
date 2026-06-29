@@ -1,0 +1,6 @@
+interface:
+  display_name: "주식 애널리스트 리포팅"
+  short_description: "투자의견 목표가 가격전략 분석"
+  default_prompt: "Use $stock-analyst-reporting to convert this research into an analyst-style opinion, valuation range, buy zone, sell zone, and risk score."
+policy:
+  allow_implicit_invocation: true

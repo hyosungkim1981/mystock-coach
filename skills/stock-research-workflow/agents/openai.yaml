@@ -1,0 +1,6 @@
+interface:
+  display_name: "주식 리서치 워크플로우"
+  short_description: "기업 뉴스 공시 성장성 리스크 조사"
+  default_prompt: "Use $stock-research-workflow to research this holding's company, news, disclosures, growth drivers, risks, and dashboard scores."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "에이전트 답변 검증"
+  short_description: "형식 근거 안전성 필드 검증"
+  default_prompt: "Use $agent-response-validation to grade this stock coaching agent answer for fields, evidence, safety, privacy, and dashboard usability."
+policy:
+  allow_implicit_invocation: true

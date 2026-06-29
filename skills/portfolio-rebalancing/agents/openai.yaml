@@ -1,0 +1,6 @@
+interface:
+  display_name: "포트폴리오 리밸런싱"
+  short_description: "목표비중 리밸런싱 현금계획"
+  default_prompt: "Use $portfolio-rebalancing to turn these holdings and analyst outputs into target weights, rebalancing actions, cash plan, and risk notes."
+policy:
+  allow_implicit_invocation: true
