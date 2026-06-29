@@ -240,6 +240,27 @@ OCR이 틀릴 수 있으므로 결과 텍스트와 표 데이터를 모두 사�
 - 필요 시 서버형 `portfolio-sessions` API로 상세 대시보드 공유 링크 생성
 - 원본 이미지와 분석 결과의 자동 삭제 정책 적용
 
+## 2026-06-29 공개 HTTPS 배포
+
+배포 결과:
+
+- GitHub 공개 저장소 생성: https://github.com/hyosungkim1981/mystock-coach
+- GitHub Pages 공개 주소 생성: https://hyosungkim1981.github.io/mystock-coach/
+- HTTPS 응답 확인 완료
+- GitHub Pages source는 `main` 브랜치 `/` 경로를 사용한다.
+
+배포 전 검증:
+
+- `npm test` 통과
+- `npm run build` 통과
+- GitHub push 전 ECC pre-push 검증에서 테스트와 빌드 통과
+
+메모:
+
+- Sites 배포도 검토했지만 현재 워크스페이스에서 Sites 기능이 활성화되어 있지 않아 GitHub Pages로 우회 배포했다.
+- 카톡 오픈채팅방 공지 링크는 로컬 주소가 아니라 위 GitHub Pages 주소를 사용한다.
+- 추후 카카오 JavaScript SDK를 실제 연결하려면 카카오 디벨로퍼스 Web 플랫폼 도메인에 `https://hyosungkim1981.github.io`를 등록한다.
+
 ## 보안 및 개인정보 원칙
 
 - 업로드 이미지는 기본적으로 브라우저 안에서 처리한다.
