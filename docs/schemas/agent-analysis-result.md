@@ -8,18 +8,38 @@
 
 ## 최상위 구조
 
+여러 종목 분석 결과는 포트폴리오 실행 단위로 감싼다.
+
 | 필드 | 타입 | 설명 |
 |---|---|---|
 | schemaVersion | string | 스키마 버전 |
 | runId | string | 에이전트 실행 ID |
 | runDate | string | 실행 기준일 |
 | purpose | string | 실행 목적 |
+| riskProfile | string | 투자 성향 |
+| portfolioSummary | object | 포트폴리오 요약 |
+| results | array | 종목별 에이전트 분석 결과 |
+| sources | array | 확인 출처 |
+| safetyNotice | string | 투자 안전 고지 |
+
+단일 종목 결과는 `results[]`의 각 원소로 표현한다.
+
+| 필드 | 타입 | 설명 |
+|---|---|---|
 | holding | object | 보유 종목 기본 정보 |
 | appScore | object | 기존 앱 점수 계산 결과 |
 | agentAnalysis | object | 에이전트 체인 분석 결과 |
 | dashboardResult | object | 대시보드 표시용 최종 결과 |
-| sources | array | 확인 출처 |
-| safetyNotice | string | 투자 안전 고지 |
+
+## portfolioSummary
+
+| 필드 | 타입 | 설명 |
+|---|---|---|
+| holdingCount | number | 분석 종목 수 |
+| totalMarketValue | number | 전체 평가금액 |
+| weightedProfit | number | 평가금액 가중 수익률 |
+| topWeight | number | 최대 단일 종목 비중 |
+| averageAction | object | 평균 액션 점수와 라벨 |
 
 ## holding
 

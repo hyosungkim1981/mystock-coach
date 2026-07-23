@@ -1,5 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const { execFileSync } = require('node:child_process');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 
 const {
   ACTION_LABELS,
@@ -7,6 +11,7 @@ const {
   calculateHolding,
   buildPortfolioSharePayload,
   explainHoldingAction,
+  generateAgentAnalysisResults,
   parseOcrText,
   summarizePortfolio,
   validateImageFilesMeta,
@@ -311,4 +316,116 @@ test('buildPortfolioSharePayload returns an upload invitation when no holdings e
   assert.match(payload.description, /이미지 업로드/);
   assert.match(payload.text, /대시보드 만들기/);
   assert.equal(payload.buttonTitle, '대시보드 만들기');
+});
+
+test('generateAgentAnalysisResults creates dashboard-ready agent results for multiple holdings', () => {
+  const input = {
+    runDate: '2026-07-23',
+    riskProfile: '중립형',
+    maxSingleStockWeight: 25,
+    targetCashWeight: 10,
+    portfolio: [
+      {
+        name: '삼성전자',
+        ticker: '005930',
+        market: 'KOSPI',
+        avgPrice: 67696,
+        currentPrice: 255000,
+        marketValue: 52622500,
+        profitLoss: 38656500,
+        profitRate: 276.79,
+        portfolioWeight: 40.53,
+        newsScore: 25,
+        growthScore: 45,
+      },
+      {
+        name: 'NAVER',
+        ticker: '035420',
+        market: 'KOSPI',
+        avgPrice: 177000,
+        currentPrice: 165000,
+        marketValue: 3928000,
+        profitLoss: -281897,
+        profitRate: -6.69,
+        portfolioWeight: 3.03,
+        newsScore: -20,
+        growthScore: 10,
+      },
+    ],
+  };
+
+  const output = generateAgentAnalysisResults(input);
+  const samsung = output.results[0];
+  const naver = output.results[1];
+
+  assert.equal(output.schemaVersion, 'agent-analysis-result.v1');
+  assert.equal(output.runDate, '2026-07-23');
+  assert.equal(output.results.length, 2);
+  assert.equal(output.portfolioSummary.holdingCount, 2);
+  assert.equal(samsung.holding.name, '삼성전자');
+  assert.equal(samsung.appScore.action, ACTION_LABELS.HOLD);
+  assert.equal(samsung.dashboardResult.displayAction, ACTION_LABELS.SPLIT_SELL_STAGE_1);
+  assert.equal(samsung.agentAnalysis.portfolioOperationResult.rebalanceAction, '일부축소');
+  assert.equal(samsung.agentAnalysis.portfolioOperationResult.targetWeight, 24);
+  assert.equal(samsung.agentAnalysis.validationResult.validationStatus, 'WARN');
+  assert.equal(samsung.agentAnalysis.validationResult.usableForDashboard, true);
+  assert.match(samsung.dashboardResult.detailText, /비중/);
+  assert.match(samsung.dashboardResult.buyReferenceText, /매수/);
+  assert.match(samsung.dashboardResult.sellReferenceText, /매도|축소/);
+  assert.equal(naver.holding.name, 'NAVER');
+  assert.ok(naver.agentAnalysis.researchResult.riskFactors.length > 0);
+  assert.ok(Array.isArray(output.sources));
+});
+
+test('generateAgentAnalysisResults derives missing weights and does not mutate input', () => {
+  const input = {
+    runDate: '2026-07-23',
+    portfolio: [
+      { name: '현대차', currentPrice: 252000, marketValue: 7207500, profitRate: 22.84 },
+      { name: '월덱스', currentPrice: 20165, marketValue: 2016500, profitRate: 5.72 },
+    ],
+  };
+
+  const original = JSON.stringify(input);
+  const output = generateAgentAnalysisResults(input);
+
+  assert.equal(JSON.stringify(input), original);
+  assert.equal(output.results[0].holding.portfolioWeight, 78.14);
+  assert.equal(output.results[1].holding.portfolioWeight, 21.86);
+  assert.equal(output.results[0].agentAnalysis.validationResult.validationStatus, 'WARN');
+  assert.ok(output.results.every((item) => item.dashboardResult.validationBadge));
+});
+
+test('generate-agent-analysis script converts portfolio JSON file to result JSON', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mystock-agent-analysis-'));
+  const inputPath = path.join(tempDir, 'portfolio.json');
+  const outputPath = path.join(tempDir, 'agent-analysis.json');
+
+  fs.writeFileSync(
+    inputPath,
+    JSON.stringify({
+      runDate: '2026-07-23',
+      portfolio: [
+        {
+          name: '삼성전자',
+          currentPrice: 255000,
+          marketValue: 52622500,
+          profitRate: 276.79,
+          portfolioWeight: 40.53,
+          newsScore: 25,
+          growthScore: 45,
+        },
+      ],
+    }),
+  );
+
+  execFileSync(process.execPath, ['scripts/generate-agent-analysis.mjs', inputPath, outputPath], {
+    cwd: path.join(__dirname, '..'),
+  });
+
+  const output = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
+
+  assert.equal(output.schemaVersion, 'agent-analysis-result.v1');
+  assert.equal(output.results[0].holding.name, '삼성전자');
+  assert.equal(output.results[0].dashboardResult.displayAction, ACTION_LABELS.SPLIT_SELL_STAGE_1);
 });

@@ -415,6 +415,39 @@ OCR이 틀릴 수 있으므로 결과 텍스트와 표 데이터를 모두 사�
 - 공식 `quick_validate.py` 검증은 로컬 Python 환경에 `yaml` 모듈이 없어 실행하지 못했다. 대신 `SKILL.md` frontmatter 구조와 기존 앱 테스트를 별도로 확인한다.
 - 각 스킬에는 `agents/openai.yaml` UI 메타데이터도 추가했다.
 
+## 2026-07-23 여러 종목 에이전트 분석 JSON 생성기
+
+여러 종목 입력 JSON을 받아 에이전트 분석 결과 JSON을 만드는 1차 생성기를 구현했다.
+
+- 핵심 함수: `generateAgentAnalysisResults(input)`
+- 위치: `src/portfolio.js`
+- CLI: `scripts/generate-agent-analysis.mjs`
+- npm 명령: `npm run agent:generate -- <input.json> [output.json]`
+- 테스트: `test/portfolio.test.js`
+- 샘플 입력: `docs/agent-run-samples/2026-07-23-multi-holdings-input.json`
+- 샘플 출력: `docs/agent-run-samples/2026-07-23-multi-holdings-output.json`
+
+생성 흐름:
+
+1. 입력 JSON의 `portfolio[]`를 정규화한다.
+2. 비중이 비어 있으면 평가금액 기준으로 자동 계산한다.
+3. 기존 앱 점수는 `appScore`에 보존한다.
+4. 로컬 스킬 규칙을 기준으로 `researchResult`, `analystResult`, `portfolioOperationResult`, `validationResult`를 만든다.
+5. 대시보드 표시용 `dashboardResult`를 만든다.
+6. 여러 종목 결과는 `results[]` 배열로 반환한다.
+
+현재 한계:
+
+- 실제 Workspace Agent 또는 외부 LLM을 호출하지 않는다.
+- 최신 뉴스/공시/실적/컨센서스는 자동 조회하지 않는다.
+- 따라서 기본 검증 상태는 `WARN`이며, 대시보드 사용은 가능하지만 최신 출처 확인이 필요하다.
+
+다음 단계:
+
+- 현재 웹앱에 JSON 업로드/붙여넣기 입력 영역을 추가한다.
+- 생성된 `dashboardResult`와 `agentAnalysis`를 종목별 `내용` 영역에 표시한다.
+- 이후 서버를 붙이면 최신 데이터 조회와 실제 에이전트 호출로 `WARN`을 `PASS`로 올릴 수 있다.
+
 ## 보안 및 개인정보 원칙
 
 - 업로드 이미지는 기본적으로 브라우저 안에서 처리한다.

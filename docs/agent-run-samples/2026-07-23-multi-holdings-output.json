@@ -1,0 +1,384 @@
+{
+  "schemaVersion": "agent-analysis-result.v1",
+  "runId": "agent-run-20260723-portfolio",
+  "runDate": "2026-07-23",
+  "purpose": "여러 종목 입력 JSON 기반 에이전트 분석 결과 생성 예시",
+  "riskProfile": "중립형",
+  "portfolioSummary": {
+    "holdingCount": 3,
+    "totalMarketValue": 63758000,
+    "weightedProfit": 230.62,
+    "topWeight": 40.53,
+    "averageAction": {
+      "score": 61,
+      "label": "분할매수 1단계",
+      "tone": "buy-light",
+      "range": "60-71"
+    }
+  },
+  "results": [
+    {
+      "holding": {
+        "name": "삼성전자",
+        "ticker": "005930",
+        "market": "KOSPI",
+        "avgPrice": 67696,
+        "currentPrice": 255000,
+        "marketValue": 52622500,
+        "profitLoss": 38656500,
+        "profitRate": 276.79,
+        "portfolioWeight": 40.53,
+        "source": "사용자 입력 JSON"
+      },
+      "appScore": {
+        "score": 57,
+        "action": "보유",
+        "signals": {
+          "profit": 48,
+          "weight": 22,
+          "risk": 28,
+          "momentum": 100,
+          "news": 62.5,
+          "growth": 72.5
+        },
+        "memo": "삼성전자는 기존 앱 계산식 기준 57점/보유입니다."
+      },
+      "agentAnalysis": {
+        "researchResult": {
+          "researchDate": "2026-07-23",
+          "companySummary": "삼성전자(005930) 리서치 초안입니다. 회사 개요와 사업부 상세는 공식 IR, DART, KIND, KRX 자료 확인 후 보강해야 합니다.",
+          "businessSegments": [
+            "공식 사업보고서와 IR 자료 확인 필요"
+          ],
+          "growthDrivers": [
+            "성장성 점수 45점으로 산업/실적 기대를 긍정적으로 반영했습니다.",
+            "뉴스 모멘텀 점수 25점으로 단기 이벤트 흐름은 우호적입니다."
+          ],
+          "newsMomentum": "뉴스 점수 25점 기준의 로컬 평가입니다. 최신 뉴스/공시 API 연결 전에는 기준일과 출처 확인이 필요합니다.",
+          "riskFactors": [
+            "최신 뉴스, 공시, 실적 자료가 연결되기 전까지는 분석 신뢰도를 제한해야 합니다.",
+            "단일 종목 비중이 매우 높아 포트폴리오 변동성에 큰 영향을 줄 수 있습니다.",
+            "평가이익이 커서 급등 후 차익실현과 변동성 확대를 관리해야 합니다."
+          ],
+          "growthScore": 45,
+          "newsScore": 25,
+          "riskLevel": "높음",
+          "dashboardMemo": "삼성전자는 성장성 45점, 뉴스 25점, 리스크 높음로 분류됩니다."
+        },
+        "analystResult": {
+          "analystDate": "2026-07-23",
+          "analystOpinion": "보유",
+          "targetPrice": 280500,
+          "targetPriceRange": {
+            "low": 262500,
+            "high": 280500
+          },
+          "buyReferenceRange": {
+            "low": 224500,
+            "high": 239500
+          },
+          "sellReferenceRange": {
+            "low": 262500,
+            "high": 280500
+          },
+          "valuationMethod": "로컬 간이 시나리오 방식. 정식 목표주가가 아니라 현재가, 앱 점수, 수익률, 비중, 성장성/뉴스 점수를 반영한 대시보드용 참고 구간입니다.",
+          "upsideFromCurrent": 10,
+          "valuationScore": 21.25,
+          "riskScore": -22,
+          "analystSummary": "삼성전자는 보유 관점입니다. 목표가/매수·매도 구간은 공식 실적과 컨센서스 확인 전의 참고값입니다.",
+          "confidenceLevel": "낮음~보통"
+        },
+        "portfolioOperationResult": {
+          "currentWeight": 40.53,
+          "targetWeight": 24,
+          "rebalanceAction": "일부축소",
+          "rebalancePriority": 1,
+          "rebalanceDelta": -16.53,
+          "cashPlan": "비중 축소분은 현금 비중 10% 회복에 우선 사용합니다.",
+          "concentrationRisk": "현재 비중 40.53%가 종목당 기준 25%를 넘어 집중 리스크가 있습니다.",
+          "operatorSummary": "삼성전자는 일부축소 후보입니다. 현재 비중 40.53%가 종목당 기준 25%를 넘어 집중 리스크가 있습니다."
+        },
+        "validationResult": {
+          "validationStatus": "WARN",
+          "validationScore": 78,
+          "missingFields": [
+            "최신 뉴스/공시 출처",
+            "정식 애널리스트 컨센서스",
+            "실시간 재무/밸류에이션 데이터"
+          ],
+          "safetyWarnings": [
+            "이 결과는 로컬 규칙 기반 초안이며 실제 주문 실행으로 연결하면 안 됩니다.",
+            "단일 종목 비중이 높아 추가 매수보다 리스크 관리가 우선입니다."
+          ],
+          "sourceCheck": "2026-07-23 기준 로컬 입력값으로 생성했습니다. 최신 정보는 DART, KIND, KRX, 회사 IR, 주요 뉴스 출처 확인이 필요합니다.",
+          "numericEvidenceCheck": "앱 점수, 수익률, 비중, 가격 구간은 입력값과 로컬 계산식 기반입니다. 로컬 간이 시나리오 방식. 정식 목표주가가 아니라 현재가, 앱 점수, 수익률, 비중, 성장성/뉴스 점수를 반영한 대시보드용 참고 구간입니다.",
+          "usableForDashboard": true,
+          "revisionPrompt": "삼성전자의 최신 뉴스, 공시, 실적, 컨센서스 목표가를 확인해 researchResult와 analystResult를 보강하세요."
+        }
+      },
+      "dashboardResult": {
+        "displayScore": 44,
+        "displayAction": "분할매도 1단계",
+        "actionReason": "보유 앱 점수를 기준으로 하되, 일부축소 운영 판단과 검증 상태 WARN를 반영했습니다.",
+        "primaryBadges": [
+          "성장성 긍정",
+          "높음",
+          "일부축소",
+          "비중 과다"
+        ],
+        "detailText": "삼성전자는 삼성전자는 성장성 45점, 뉴스 25점, 리스크 높음로 분류됩니다. 포트폴리오 운영자는 삼성전자는 일부축소 후보입니다. 현재 비중 40.53%가 종목당 기준 25%를 넘어 집중 리스크가 있습니다.",
+        "buyReferenceText": "매수 참고 구간은 224,500원~239,500원입니다. 검증 상태가 WARN이므로 최신 데이터 확인 후 분할 검토합니다.",
+        "sellReferenceText": "매도/축소 참고 구간은 262,500원~280,500원입니다. 일부축소 조건과 함께 봅니다.",
+        "riskText": "최신 뉴스, 공시, 실적 자료가 연결되기 전까지는 분석 신뢰도를 제한해야 합니다. 단일 종목 비중이 매우 높아 포트폴리오 변동성에 큰 영향을 줄 수 있습니다. 평가이익이 커서 급등 후 차익실현과 변동성 확대를 관리해야 합니다.",
+        "validationBadge": "WARN"
+      }
+    },
+    {
+      "holding": {
+        "name": "NAVER",
+        "ticker": "035420",
+        "market": "KOSPI",
+        "avgPrice": 177000,
+        "currentPrice": 165000,
+        "marketValue": 3928000,
+        "profitLoss": -281897,
+        "profitRate": -6.69,
+        "portfolioWeight": 3.03,
+        "source": "사용자 입력 JSON"
+      },
+      "appScore": {
+        "score": 53,
+        "action": "보유",
+        "signals": {
+          "profit": 43,
+          "weight": 74,
+          "risk": 68,
+          "momentum": 38.0375,
+          "news": 40,
+          "growth": 55
+        },
+        "memo": "NAVER는 기존 앱 계산식 기준 53점/보유입니다."
+      },
+      "agentAnalysis": {
+        "researchResult": {
+          "researchDate": "2026-07-23",
+          "companySummary": "NAVER(035420) 리서치 초안입니다. 회사 개요와 사업부 상세는 공식 IR, DART, KIND, KRX 자료 확인 후 보강해야 합니다.",
+          "businessSegments": [
+            "공식 사업보고서와 IR 자료 확인 필요"
+          ],
+          "growthDrivers": [
+            "성장성 점수는 중립권이라 추가 리서치와 실적 확인이 필요합니다.",
+            "뉴스 모멘텀 점수 -20점으로 부정적 이슈를 우선 점검해야 합니다."
+          ],
+          "newsMomentum": "뉴스 점수 -20점 기준의 로컬 평가입니다. 최신 뉴스/공시 API 연결 전에는 기준일과 출처 확인이 필요합니다.",
+          "riskFactors": [
+            "최신 뉴스, 공시, 실적 자료가 연결되기 전까지는 분석 신뢰도를 제한해야 합니다.",
+            "수익률이 마이너스라 추가 매수 전 하락 원인 확인이 필요합니다.",
+            "뉴스 모멘텀이 부정적이므로 반등 시에도 리스크 재평가가 필요합니다."
+          ],
+          "growthScore": 10,
+          "newsScore": -20,
+          "riskLevel": "보통",
+          "dashboardMemo": "NAVER는 성장성 10점, 뉴스 -20점, 리스크 보통로 분류됩니다."
+        },
+        "analystResult": {
+          "analystDate": "2026-07-23",
+          "analystOpinion": "보유",
+          "targetPrice": 181500,
+          "targetPriceRange": {
+            "low": 175000,
+            "high": 181500
+          },
+          "buyReferenceRange": {
+            "low": 145000,
+            "high": 155000
+          },
+          "sellReferenceRange": {
+            "low": 175000,
+            "high": 181500
+          },
+          "valuationMethod": "로컬 간이 시나리오 방식. 정식 목표주가가 아니라 현재가, 앱 점수, 수익률, 비중, 성장성/뉴스 점수를 반영한 대시보드용 참고 구간입니다.",
+          "upsideFromCurrent": 10,
+          "valuationScore": 5,
+          "riskScore": 18,
+          "analystSummary": "NAVER는 보유 관점입니다. 목표가/매수·매도 구간은 공식 실적과 컨센서스 확인 전의 참고값입니다.",
+          "confidenceLevel": "낮음~보통"
+        },
+        "portfolioOperationResult": {
+          "currentWeight": 3.03,
+          "targetWeight": 3.03,
+          "rebalanceAction": "유지",
+          "rebalancePriority": 3,
+          "rebalanceDelta": 0,
+          "cashPlan": "현금 비중 10%를 유지하면서 조건 충족 시에만 분할 집행합니다.",
+          "concentrationRisk": "현재 비중 3.03%는 종목당 기준 25% 안에 있습니다.",
+          "operatorSummary": "NAVER는 유지 후보입니다. 현재 비중 3.03%는 종목당 기준 25% 안에 있습니다."
+        },
+        "validationResult": {
+          "validationStatus": "WARN",
+          "validationScore": 78,
+          "missingFields": [
+            "최신 뉴스/공시 출처",
+            "정식 애널리스트 컨센서스",
+            "실시간 재무/밸류에이션 데이터"
+          ],
+          "safetyWarnings": [
+            "이 결과는 로컬 규칙 기반 초안이며 실제 주문 실행으로 연결하면 안 됩니다."
+          ],
+          "sourceCheck": "2026-07-23 기준 로컬 입력값으로 생성했습니다. 최신 정보는 DART, KIND, KRX, 회사 IR, 주요 뉴스 출처 확인이 필요합니다.",
+          "numericEvidenceCheck": "앱 점수, 수익률, 비중, 가격 구간은 입력값과 로컬 계산식 기반입니다. 로컬 간이 시나리오 방식. 정식 목표주가가 아니라 현재가, 앱 점수, 수익률, 비중, 성장성/뉴스 점수를 반영한 대시보드용 참고 구간입니다.",
+          "usableForDashboard": true,
+          "revisionPrompt": "NAVER의 최신 뉴스, 공시, 실적, 컨센서스 목표가를 확인해 researchResult와 analystResult를 보강하세요."
+        }
+      },
+      "dashboardResult": {
+        "displayScore": 53,
+        "displayAction": "보유",
+        "actionReason": "보유 앱 점수를 기준으로 하되, 유지 운영 판단과 검증 상태 WARN를 반영했습니다.",
+        "primaryBadges": [
+          "보통",
+          "유지",
+          "뉴스 점검"
+        ],
+        "detailText": "NAVER는 NAVER는 성장성 10점, 뉴스 -20점, 리스크 보통로 분류됩니다. 포트폴리오 운영자는 NAVER는 유지 후보입니다. 현재 비중 3.03%는 종목당 기준 25% 안에 있습니다.",
+        "buyReferenceText": "매수 참고 구간은 145,000원~155,000원입니다. 검증 상태가 WARN이므로 최신 데이터 확인 후 분할 검토합니다.",
+        "sellReferenceText": "매도/축소 참고 구간은 175,000원~181,500원입니다. 유지 조건과 함께 봅니다.",
+        "riskText": "최신 뉴스, 공시, 실적 자료가 연결되기 전까지는 분석 신뢰도를 제한해야 합니다. 수익률이 마이너스라 추가 매수 전 하락 원인 확인이 필요합니다. 뉴스 모멘텀이 부정적이므로 반등 시에도 리스크 재평가가 필요합니다.",
+        "validationBadge": "WARN"
+      }
+    },
+    {
+      "holding": {
+        "name": "현대차",
+        "ticker": "005380",
+        "market": "KOSPI",
+        "avgPrice": 244000,
+        "currentPrice": 252000,
+        "marketValue": 7207500,
+        "profitLoss": 1340500,
+        "profitRate": 22.84,
+        "portfolioWeight": 5.55,
+        "source": "사용자 입력 JSON"
+      },
+      "appScore": {
+        "score": 72,
+        "action": "분할매수 2단계",
+        "signals": {
+          "profit": 68,
+          "weight": 74,
+          "risk": 74,
+          "momentum": 81.25,
+          "news": 57.5,
+          "growth": 67.5
+        },
+        "memo": "현대차는 기존 앱 계산식 기준 72점/분할매수 2단계입니다."
+      },
+      "agentAnalysis": {
+        "researchResult": {
+          "researchDate": "2026-07-23",
+          "companySummary": "현대차(005380) 리서치 초안입니다. 회사 개요와 사업부 상세는 공식 IR, DART, KIND, KRX 자료 확인 후 보강해야 합니다.",
+          "businessSegments": [
+            "공식 사업보고서와 IR 자료 확인 필요"
+          ],
+          "growthDrivers": [
+            "성장성 점수 35점으로 산업/실적 기대를 긍정적으로 반영했습니다.",
+            "뉴스 모멘텀은 중립권이며 최신 공시와 주요 뉴스를 추가 확인해야 합니다."
+          ],
+          "newsMomentum": "뉴스 점수 15점 기준의 로컬 평가입니다. 최신 뉴스/공시 API 연결 전에는 기준일과 출처 확인이 필요합니다.",
+          "riskFactors": [
+            "최신 뉴스, 공시, 실적 자료가 연결되기 전까지는 분석 신뢰도를 제한해야 합니다."
+          ],
+          "growthScore": 35,
+          "newsScore": 15,
+          "riskLevel": "낮음~보통",
+          "dashboardMemo": "현대차는 성장성 35점, 뉴스 15점, 리스크 낮음~보통로 분류됩니다."
+        },
+        "analystResult": {
+          "analystDate": "2026-07-23",
+          "analystOpinion": "매수",
+          "targetPrice": 292500,
+          "targetPriceRange": {
+            "low": 267000,
+            "high": 292500
+          },
+          "buyReferenceRange": {
+            "low": 232000,
+            "high": 247000
+          },
+          "sellReferenceRange": {
+            "low": 267000,
+            "high": 292500
+          },
+          "valuationMethod": "로컬 간이 시나리오 방식. 정식 목표주가가 아니라 현재가, 앱 점수, 수익률, 비중, 성장성/뉴스 점수를 반영한 대시보드용 참고 구간입니다.",
+          "upsideFromCurrent": 16.07,
+          "valuationScore": 38.75,
+          "riskScore": 24,
+          "analystSummary": "현대차는 매수 관점입니다. 목표가/매수·매도 구간은 공식 실적과 컨센서스 확인 전의 참고값입니다.",
+          "confidenceLevel": "낮음~보통"
+        },
+        "portfolioOperationResult": {
+          "currentWeight": 5.55,
+          "targetWeight": 10.55,
+          "rebalanceAction": "비중확대",
+          "rebalancePriority": 2,
+          "rebalanceDelta": 5,
+          "cashPlan": "현금 비중 10%를 유지하면서 조건 충족 시에만 분할 집행합니다.",
+          "concentrationRisk": "현재 비중 5.55%는 종목당 기준 25% 안에 있습니다.",
+          "operatorSummary": "현대차는 비중확대 후보입니다. 현재 비중 5.55%는 종목당 기준 25% 안에 있습니다."
+        },
+        "validationResult": {
+          "validationStatus": "WARN",
+          "validationScore": 78,
+          "missingFields": [
+            "최신 뉴스/공시 출처",
+            "정식 애널리스트 컨센서스",
+            "실시간 재무/밸류에이션 데이터"
+          ],
+          "safetyWarnings": [
+            "이 결과는 로컬 규칙 기반 초안이며 실제 주문 실행으로 연결하면 안 됩니다."
+          ],
+          "sourceCheck": "2026-07-23 기준 로컬 입력값으로 생성했습니다. 최신 정보는 DART, KIND, KRX, 회사 IR, 주요 뉴스 출처 확인이 필요합니다.",
+          "numericEvidenceCheck": "앱 점수, 수익률, 비중, 가격 구간은 입력값과 로컬 계산식 기반입니다. 로컬 간이 시나리오 방식. 정식 목표주가가 아니라 현재가, 앱 점수, 수익률, 비중, 성장성/뉴스 점수를 반영한 대시보드용 참고 구간입니다.",
+          "usableForDashboard": true,
+          "revisionPrompt": "현대차의 최신 뉴스, 공시, 실적, 컨센서스 목표가를 확인해 researchResult와 analystResult를 보강하세요."
+        }
+      },
+      "dashboardResult": {
+        "displayScore": 72,
+        "displayAction": "분할매수 2단계",
+        "actionReason": "분할매수 2단계 앱 점수를 기준으로 하되, 비중확대 운영 판단과 검증 상태 WARN를 반영했습니다.",
+        "primaryBadges": [
+          "성장성 긍정",
+          "낮음~보통",
+          "비중확대"
+        ],
+        "detailText": "현대차는 현대차는 성장성 35점, 뉴스 15점, 리스크 낮음~보통로 분류됩니다. 포트폴리오 운영자는 현대차는 비중확대 후보입니다. 현재 비중 5.55%는 종목당 기준 25% 안에 있습니다.",
+        "buyReferenceText": "매수 참고 구간은 232,000원~247,000원입니다. 검증 상태가 WARN이므로 최신 데이터 확인 후 분할 검토합니다.",
+        "sellReferenceText": "매도/축소 참고 구간은 267,000원~292,500원입니다. 비중확대 조건과 함께 봅니다.",
+        "riskText": "최신 뉴스, 공시, 실적 자료가 연결되기 전까지는 분석 신뢰도를 제한해야 합니다.",
+        "validationBadge": "WARN"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "title": "DART",
+      "url": "https://dart.fss.or.kr",
+      "checkedDate": "2026-07-23",
+      "usage": "국내 기업 공시와 사업보고서 확인 필요"
+    },
+    {
+      "title": "KIND",
+      "url": "https://kind.krx.co.kr",
+      "checkedDate": "2026-07-23",
+      "usage": "거래소 공시 확인 필요"
+    },
+    {
+      "title": "KRX",
+      "url": "https://www.krx.co.kr",
+      "checkedDate": "2026-07-23",
+      "usage": "상장 종목과 시장 데이터 확인 필요"
+    }
+  ],
+  "safetyNotice": "이 결과는 mystock 로컬 스킬 기반의 주식 코칭 참고 자료이며, 금융투자업자의 투자자문이나 실제 매수·매도 지시가 아닙니다."
+}

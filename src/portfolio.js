@@ -581,6 +581,370 @@
     };
   }
 
+  function normalizeRunDate(value) {
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value.trim())) {
+      return value.trim();
+    }
+
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function normalizeHoldingInput(input) {
+    return {
+      ...input,
+      weight: input.portfolioWeight ?? input.weight,
+    };
+  }
+
+  function normalizePortfolioHoldings(portfolio) {
+    const holdings = Array.from(portfolio || []).map((item) => calculateHolding(normalizeHoldingInput(item || {})));
+    return deriveMissingWeights(holdings);
+  }
+
+  function determineRiskLevel(holding) {
+    if (holding.weight >= 35 || holding.profitRate <= -18 || holding.newsScore <= -50) return '높음';
+    if (holding.weight >= 25 || holding.profitRate >= 45 || holding.profitRate <= -8) return '보통~높음';
+    if (holding.weight <= 8 && holding.profitRate >= 0 && holding.newsScore >= 0) return '낮음~보통';
+    return '보통';
+  }
+
+  function buildAgentGrowthDrivers(holding) {
+    const drivers = [];
+
+    if (holding.growthScore >= 20) {
+      drivers.push(`성장성 점수 ${holding.growthScore}점으로 산업/실적 기대를 긍정적으로 반영했습니다.`);
+    } else if (holding.growthScore <= -20) {
+      drivers.push(`성장성 점수 ${holding.growthScore}점으로 실적 둔화나 경쟁력 약화 가능성을 점검해야 합니다.`);
+    } else {
+      drivers.push('성장성 점수는 중립권이라 추가 리서치와 실적 확인이 필요합니다.');
+    }
+
+    if (holding.newsScore >= 20) {
+      drivers.push(`뉴스 모멘텀 점수 ${holding.newsScore}점으로 단기 이벤트 흐름은 우호적입니다.`);
+    } else if (holding.newsScore <= -20) {
+      drivers.push(`뉴스 모멘텀 점수 ${holding.newsScore}점으로 부정적 이슈를 우선 점검해야 합니다.`);
+    } else {
+      drivers.push('뉴스 모멘텀은 중립권이며 최신 공시와 주요 뉴스를 추가 확인해야 합니다.');
+    }
+
+    return drivers;
+  }
+
+  function buildAgentRiskFactors(holding) {
+    const risks = ['최신 뉴스, 공시, 실적 자료가 연결되기 전까지는 분석 신뢰도를 제한해야 합니다.'];
+
+    if (holding.weight >= 35) {
+      risks.push('단일 종목 비중이 매우 높아 포트폴리오 변동성에 큰 영향을 줄 수 있습니다.');
+    } else if (holding.weight >= 25) {
+      risks.push('단일 종목 비중이 높은 편이라 추가 매수보다 비중 관리가 필요합니다.');
+    }
+
+    if (holding.profitRate >= 45) {
+      risks.push('평가이익이 커서 급등 후 차익실현과 변동성 확대를 관리해야 합니다.');
+    } else if (holding.profitRate <= -18) {
+      risks.push('손실폭이 커서 손절 기준과 투자근거 훼손 여부를 우선 확인해야 합니다.');
+    } else if (holding.profitRate < 0) {
+      risks.push('수익률이 마이너스라 추가 매수 전 하락 원인 확인이 필요합니다.');
+    }
+
+    if (holding.newsScore <= -20) {
+      risks.push('뉴스 모멘텀이 부정적이므로 반등 시에도 리스크 재평가가 필요합니다.');
+    }
+
+    return risks;
+  }
+
+  function buildResearchResult(holding, runDate) {
+    const riskLevel = determineRiskLevel(holding);
+
+    return {
+      researchDate: runDate,
+      companySummary: `${holding.name}${holding.ticker ? `(${holding.ticker})` : ''} 리서치 초안입니다. 회사 개요와 사업부 상세는 공식 IR, DART, KIND, KRX 자료 확인 후 보강해야 합니다.`,
+      businessSegments: ['공식 사업보고서와 IR 자료 확인 필요'],
+      growthDrivers: buildAgentGrowthDrivers(holding),
+      newsMomentum: `뉴스 점수 ${holding.newsScore}점 기준의 로컬 평가입니다. 최신 뉴스/공시 API 연결 전에는 기준일과 출처 확인이 필요합니다.`,
+      riskFactors: buildAgentRiskFactors(holding),
+      growthScore: holding.growthScore,
+      newsScore: holding.newsScore,
+      riskLevel,
+      dashboardMemo: `${holding.name}${topicParticle(holding.name)} 성장성 ${holding.growthScore}점, 뉴스 ${holding.newsScore}점, 리스크 ${riskLevel}로 분류됩니다.`,
+    };
+  }
+
+  function determineAnalystOpinion(holding) {
+    if (holding.action.score >= 72 && holding.weight < 20) return '매수';
+    if (holding.action.score >= 60 && holding.weight < 25) return '매수';
+    if (holding.action.score <= 19) return '매도';
+    if (holding.action.score <= 32) return '매도';
+    if (holding.action.score <= 44) return '관찰';
+    return '보유';
+  }
+
+  function buildRange(low, high) {
+    return {
+      low: low || null,
+      high: high || null,
+    };
+  }
+
+  function buildAnalystResult(holding, runDate) {
+    const pricePlan = buildPricePlan(holding);
+    const targetPrice = pricePlan.hasPrice ? pricePlan.sellPrice : null;
+    const targetLow = pricePlan.hasPrice ? Math.min(pricePlan.trimPrice, pricePlan.sellPrice) : null;
+    const targetHigh = pricePlan.hasPrice ? Math.max(pricePlan.trimPrice, pricePlan.sellPrice) : null;
+    const upsideFromCurrent = pricePlan.hasPrice && holding.currentPrice
+      ? round(((targetPrice - holding.currentPrice) / holding.currentPrice) * 100, 2)
+      : null;
+    const valuationPenalty = (holding.profitRate >= 45 ? 20 : 0) + (holding.weight >= 25 ? 10 : 0);
+    const valuationScore = clamp(holding.growthScore + holding.newsScore * 0.25 - valuationPenalty, -100, 100);
+    const riskScore = clamp(holding.signals.risk - 50, -100, 100);
+    const analystOpinion = determineAnalystOpinion(holding);
+
+    return {
+      analystDate: runDate,
+      analystOpinion,
+      targetPrice,
+      targetPriceRange: buildRange(targetLow, targetHigh),
+      buyReferenceRange: pricePlan.hasPrice ? buildRange(pricePlan.addBuyPrice, pricePlan.buyPrice) : buildRange(null, null),
+      sellReferenceRange: pricePlan.hasPrice ? buildRange(pricePlan.trimPrice, pricePlan.sellPrice) : buildRange(null, null),
+      valuationMethod: '로컬 간이 시나리오 방식. 정식 목표주가가 아니라 현재가, 앱 점수, 수익률, 비중, 성장성/뉴스 점수를 반영한 대시보드용 참고 구간입니다.',
+      upsideFromCurrent,
+      valuationScore: round(valuationScore, 2),
+      riskScore: round(riskScore, 2),
+      analystSummary: `${holding.name}${topicParticle(holding.name)} ${analystOpinion} 관점입니다. 목표가/매수·매도 구간은 공식 실적과 컨센서스 확인 전의 참고값입니다.`,
+      confidenceLevel: '낮음~보통',
+    };
+  }
+
+  function getMaxSingleStockWeight(value) {
+    const parsed = parseNumber(value);
+    return parsed > 0 ? parsed : 25;
+  }
+
+  function determinePortfolioOperation(holding, analystResult, options) {
+    const maxSingleStockWeight = getMaxSingleStockWeight(options.maxSingleStockWeight);
+    const targetCashWeight = Math.max(0, parseNumber(options.targetCashWeight) || 10);
+    let targetWeight = round(holding.weight, 2);
+    let rebalanceAction = '유지';
+    let rebalancePriority = 3;
+
+    if (holding.action.score <= 19 || holding.profitRate <= -25 || analystResult.analystOpinion === '매도') {
+      targetWeight = Math.min(5, targetWeight);
+      rebalanceAction = holding.profitRate <= -25 ? '정리검토' : '대폭축소';
+      rebalancePriority = 1;
+    } else if (
+      holding.weight >= maxSingleStockWeight + 10 ||
+      (holding.weight >= maxSingleStockWeight && holding.profitRate >= 45)
+    ) {
+      targetWeight = Math.max(0, round(maxSingleStockWeight - 1, 2));
+      rebalanceAction = '일부축소';
+      rebalancePriority = 1;
+    } else if (holding.weight > maxSingleStockWeight) {
+      targetWeight = maxSingleStockWeight;
+      rebalanceAction = '일부축소';
+      rebalancePriority = 2;
+    } else if (holding.action.score >= 72 && holding.weight <= maxSingleStockWeight - 5) {
+      targetWeight = round(Math.min(maxSingleStockWeight, Math.max(holding.weight + 5, 8)), 2);
+      rebalanceAction = '비중확대';
+      rebalancePriority = 2;
+    } else if (holding.action.score >= 60 && holding.weight <= maxSingleStockWeight - 3) {
+      targetWeight = round(Math.min(maxSingleStockWeight, Math.max(holding.weight + 3, 5)), 2);
+      rebalanceAction = '소폭확대';
+      rebalancePriority = 3;
+    }
+
+    const rebalanceDelta = round(targetWeight - holding.weight, 2);
+    const cashPlan = rebalanceDelta < 0
+      ? `비중 축소분은 현금 비중 ${targetCashWeight}% 회복에 우선 사용합니다.`
+      : `현금 비중 ${targetCashWeight}%를 유지하면서 조건 충족 시에만 분할 집행합니다.`;
+    const concentrationRisk = holding.weight >= maxSingleStockWeight
+      ? `현재 비중 ${round(holding.weight, 2)}%가 종목당 기준 ${maxSingleStockWeight}%를 넘어 집중 리스크가 있습니다.`
+      : `현재 비중 ${round(holding.weight, 2)}%는 종목당 기준 ${maxSingleStockWeight}% 안에 있습니다.`;
+
+    return {
+      currentWeight: round(holding.weight, 2),
+      targetWeight,
+      rebalanceAction,
+      rebalancePriority,
+      rebalanceDelta,
+      cashPlan,
+      concentrationRisk,
+      operatorSummary: `${holding.name}${topicParticle(holding.name)} ${rebalanceAction} 후보입니다. ${concentrationRisk}`,
+    };
+  }
+
+  function buildValidationResult(holding, researchResult, analystResult, portfolioOperationResult) {
+    const missingFields = [
+      '최신 뉴스/공시 출처',
+      '정식 애널리스트 컨센서스',
+      '실시간 재무/밸류에이션 데이터',
+    ];
+    const safetyWarnings = [
+      '이 결과는 로컬 규칙 기반 초안이며 실제 주문 실행으로 연결하면 안 됩니다.',
+    ];
+
+    if (!holding.currentPrice) {
+      safetyWarnings.push('현재가가 없어 매수/매도 참고가 신뢰도가 낮습니다.');
+    }
+
+    if (portfolioOperationResult.currentWeight >= 25) {
+      safetyWarnings.push('단일 종목 비중이 높아 추가 매수보다 리스크 관리가 우선입니다.');
+    }
+
+    return {
+      validationStatus: 'WARN',
+      validationScore: holding.currentPrice ? 78 : 68,
+      missingFields,
+      safetyWarnings,
+      sourceCheck: `${researchResult.researchDate} 기준 로컬 입력값으로 생성했습니다. 최신 정보는 DART, KIND, KRX, 회사 IR, 주요 뉴스 출처 확인이 필요합니다.`,
+      numericEvidenceCheck: `앱 점수, 수익률, 비중, 가격 구간은 입력값과 로컬 계산식 기반입니다. ${analystResult.valuationMethod}`,
+      usableForDashboard: true,
+      revisionPrompt: `${holding.name}의 최신 뉴스, 공시, 실적, 컨센서스 목표가를 확인해 researchResult와 analystResult를 보강하세요.`,
+    };
+  }
+
+  function determineDisplayScore(holding, portfolioOperationResult) {
+    if (portfolioOperationResult.rebalanceAction === '정리검토') return Math.min(holding.action.score, 19);
+    if (portfolioOperationResult.rebalanceAction === '대폭축소') return Math.min(holding.action.score, 32);
+    if (portfolioOperationResult.rebalanceAction === '일부축소') return Math.min(holding.action.score, 44);
+    if (portfolioOperationResult.rebalanceAction === '비중확대') return Math.max(holding.action.score, 72);
+    if (portfolioOperationResult.rebalanceAction === '소폭확대') return Math.max(holding.action.score, 60);
+    return holding.action.score;
+  }
+
+  function buildBadges(researchResult, portfolioOperationResult) {
+    const badges = [researchResult.riskLevel, portfolioOperationResult.rebalanceAction];
+
+    if (researchResult.growthScore >= 20) badges.unshift('성장성 긍정');
+    if (researchResult.newsScore <= -20) badges.push('뉴스 점검');
+    if (portfolioOperationResult.currentWeight >= 25) badges.push('비중 과다');
+
+    return Array.from(new Set(badges)).filter(Boolean).slice(0, 5);
+  }
+
+  function buildDashboardResult(holding, researchResult, analystResult, portfolioOperationResult, validationResult) {
+    const displayScore = determineDisplayScore(holding, portfolioOperationResult);
+    const displayAction = categorizeActionScore(displayScore);
+    const buyRange = analystResult.buyReferenceRange;
+    const sellRange = analystResult.sellReferenceRange;
+    const buyText = buyRange.low && buyRange.high
+      ? `매수 참고 구간은 ${formatWon(buyRange.low)}~${formatWon(buyRange.high)}입니다. 검증 상태가 ${validationResult.validationStatus}이므로 최신 데이터 확인 후 분할 검토합니다.`
+      : '매수 참고 구간을 만들려면 현재가와 최신 데이터가 필요합니다.';
+    const sellText = sellRange.low && sellRange.high
+      ? `매도/축소 참고 구간은 ${formatWon(sellRange.low)}~${formatWon(sellRange.high)}입니다. ${portfolioOperationResult.rebalanceAction} 조건과 함께 봅니다.`
+      : '매도 참고 구간을 만들려면 현재가와 최신 데이터가 필요합니다.';
+
+    return {
+      displayScore: displayAction.score,
+      displayAction: displayAction.label,
+      actionReason: `${holding.action.label} 앱 점수를 기준으로 하되, ${portfolioOperationResult.rebalanceAction} 운영 판단과 검증 상태 ${validationResult.validationStatus}를 반영했습니다.`,
+      primaryBadges: buildBadges(researchResult, portfolioOperationResult),
+      detailText: `${holding.name}${topicParticle(holding.name)} ${researchResult.dashboardMemo} 포트폴리오 운영자는 ${portfolioOperationResult.operatorSummary}`,
+      buyReferenceText: buyText,
+      sellReferenceText: sellText,
+      riskText: `${researchResult.riskFactors.join(' ')}`,
+      validationBadge: validationResult.validationStatus,
+    };
+  }
+
+  function buildAgentAnalysisResult(holding, runDate, options) {
+    const researchResult = buildResearchResult(holding, runDate);
+    const analystResult = buildAnalystResult(holding, runDate);
+    const portfolioOperationResult = determinePortfolioOperation(holding, analystResult, options);
+    const validationResult = buildValidationResult(holding, researchResult, analystResult, portfolioOperationResult);
+    const dashboardResult = buildDashboardResult(
+      holding,
+      researchResult,
+      analystResult,
+      portfolioOperationResult,
+      validationResult,
+    );
+
+    return {
+      holding: {
+        name: holding.name,
+        ticker: holding.ticker,
+        market: options.market || 'KOSPI',
+        avgPrice: holding.avgPrice,
+        currentPrice: holding.currentPrice,
+        marketValue: holding.marketValue,
+        profitLoss: holding.profitLoss,
+        profitRate: holding.profitRate,
+        portfolioWeight: round(holding.weight, 2),
+        source: options.source || '사용자 입력 JSON',
+      },
+      appScore: {
+        score: holding.action.score,
+        action: holding.action.label,
+        signals: holding.signals,
+        memo: `${holding.name}${topicParticle(holding.name)} 기존 앱 계산식 기준 ${holding.action.score}점/${holding.action.label}입니다.`,
+      },
+      agentAnalysis: {
+        researchResult,
+        analystResult,
+        portfolioOperationResult,
+        validationResult,
+      },
+      dashboardResult,
+    };
+  }
+
+  function buildDefaultSources(runDate) {
+    return [
+      {
+        title: 'DART',
+        url: 'https://dart.fss.or.kr',
+        checkedDate: runDate,
+        usage: '국내 기업 공시와 사업보고서 확인 필요',
+      },
+      {
+        title: 'KIND',
+        url: 'https://kind.krx.co.kr',
+        checkedDate: runDate,
+        usage: '거래소 공시 확인 필요',
+      },
+      {
+        title: 'KRX',
+        url: 'https://www.krx.co.kr',
+        checkedDate: runDate,
+        usage: '상장 종목과 시장 데이터 확인 필요',
+      },
+    ];
+  }
+
+  function generateAgentAnalysisResults(input) {
+    const source = input && typeof input === 'object' ? input : {};
+    const runDate = normalizeRunDate(source.runDate);
+    const portfolio = source.portfolio || source.holdings || [];
+    const holdings = normalizePortfolioHoldings(portfolio);
+    const summary = summarizePortfolio(holdings);
+    const options = {
+      market: source.market || 'KOSPI',
+      maxSingleStockWeight: source.maxSingleStockWeight,
+      targetCashWeight: source.targetCashWeight,
+      source: source.source || '사용자 입력 JSON',
+    };
+    const results = holdings.map((holding) => buildAgentAnalysisResult(holding, runDate, options));
+
+    return {
+      schemaVersion: 'agent-analysis-result.v1',
+      runId: source.runId || `agent-run-${runDate.replace(/-/g, '')}-portfolio`,
+      runDate,
+      purpose: source.purpose || '여러 종목 입력 JSON 기반 에이전트 분석 결과 생성',
+      riskProfile: source.riskProfile || '중립형',
+      portfolioSummary: {
+        holdingCount: summary.holdings.length,
+        totalMarketValue: summary.totalMarketValue,
+        weightedProfit: summary.weightedProfit,
+        topWeight: summary.topWeight,
+        averageAction: summary.averageAction,
+      },
+      results,
+      sources: Array.isArray(source.sources) && source.sources.length ? source.sources.map((item) => ({ ...item })) : buildDefaultSources(runDate),
+      safetyNotice: '이 결과는 mystock 로컬 스킬 기반의 주식 코칭 참고 자료이며, 금융투자업자의 투자자문이나 실제 매수·매도 지시가 아닙니다.',
+    };
+  }
+
   function summarizePortfolio(holdings) {
     const calculated = holdings.map(calculateHolding);
     const totalMarketValue = calculated.reduce((sum, item) => sum + item.marketValue, 0);
@@ -668,6 +1032,7 @@
     calculateHolding,
     categorizeActionScore,
     explainHoldingAction,
+    generateAgentAnalysisResults,
     inferCurrentPrice,
     parseNumber,
     parseOcrText,

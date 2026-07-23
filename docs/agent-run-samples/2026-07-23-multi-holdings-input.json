@@ -1,0 +1,48 @@
+{
+  "runDate": "2026-07-23",
+  "purpose": "여러 종목 입력 JSON 기반 에이전트 분석 결과 생성 예시",
+  "riskProfile": "중립형",
+  "maxSingleStockWeight": 25,
+  "targetCashWeight": 10,
+  "portfolio": [
+    {
+      "name": "삼성전자",
+      "ticker": "005930",
+      "market": "KOSPI",
+      "avgPrice": 67696,
+      "currentPrice": 255000,
+      "marketValue": 52622500,
+      "profitLoss": 38656500,
+      "profitRate": 276.79,
+      "portfolioWeight": 40.53,
+      "newsScore": 25,
+      "growthScore": 45
+    },
+    {
+      "name": "NAVER",
+      "ticker": "035420",
+      "market": "KOSPI",
+      "avgPrice": 177000,
+      "currentPrice": 165000,
+      "marketValue": 3928000,
+      "profitLoss": -281897,
+      "profitRate": -6.69,
+      "portfolioWeight": 3.03,
+      "newsScore": -20,
+      "growthScore": 10
+    },
+    {
+      "name": "현대차",
+      "ticker": "005380",
+      "market": "KOSPI",
+      "avgPrice": 244000,
+      "currentPrice": 252000,
+      "marketValue": 7207500,
+      "profitLoss": 1340500,
+      "profitRate": 22.84,
+      "portfolioWeight": 5.55,
+      "newsScore": 15,
+      "growthScore": 35
+    }
+  ]
+}

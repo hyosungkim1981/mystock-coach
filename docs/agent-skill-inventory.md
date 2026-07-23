@@ -158,6 +158,20 @@ Codex 세션에는 많은 전역 스킬이 로드되어 있지만, 이들은 `/U
 2. `주식 코칭 에이전트 체인`, `종목 리서치 결과 스키마`, `검증 관리자 채점 기준`처럼 mystock 전용인 것은 프로젝트 내부 문서나 로컬 스킬로 저장한다.
 3. 반복 실행이 많아지면 `skills/stock-coach-agent-chain/SKILL.md`를 만들어 프로젝트 전용 스킬로 승격한다.
 
+## 6-3. Frontend Design 플러그인 확인 상태
+
+현재 프로젝트와 전역 Codex 플러그인 캐시를 확인한 결과, `Frontend Design`이라는 정확한 이름의 플러그인은 설치된 상태로 확인되지 않았다.
+
+확인 결과:
+
+- 프로젝트 내부 `Frontend Design` 플러그인/스킬: 없음
+- 전역 플러그인 캐시의 `Frontend Design` 플러그인: 없음
+- 프로젝트 내부에서 발견된 `design` 이름 포함 항목: `skills/agent-test-scenario-design`
+- 전역에서 사용할 수 있는 관련 기능: `frontend-patterns`, `sites:sites-building`, `sites:sites-hosting`, `visualize:visualize`
+- 추천 가능하지만 현재 설치되지 않은 관련 플러그인: `Figma (figma@openai-curated-remote)`
+
+정리하면, 현재 `mystock`에는 `Frontend Design`이라는 플러그인이 프로젝트 내부에 적용되어 있지 않고, 전역 플러그인으로도 설치 흔적이 없다. 다만 프론트엔드 UI 개선 작업은 전역 `frontend-patterns` 스킬과 `sites`/`visualize` 계열 기능을 활용해 진행할 수 있다.
+
 ## 7. 실제 Workspace Agent 등록 상태
 
 이전 작업 중 Workspace Agent 생성 도구 호출을 시도했지만 `Not found`로 실패했다.
